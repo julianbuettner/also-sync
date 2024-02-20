@@ -8,6 +8,52 @@ on all cores.
 This allows a async-first library development while
 supporting sync.
 
+## How to make your crate (lib) also sync
+
+```toml
+# Cargo.toml
+[package]
+# ...
+
+[features]
+# If also_sync is enabled, it enables tokio in also_sync
+also_sync = ["also_sync/tokio"]
+
+[dependencies]
+# Disable the tokio default, to only use it if enabled
+# by the dependee
+also_sync = { version = "0.1", default-features = false }
+
+```
+
+```rs
+// lib.r
+use also_sync::also_sync_tokio;
+
+pub struct MyApi;
+
+impl MyApi {
+    // If also_sync/tokio is not enabled, this macro
+    // is no-op.
+    #[also_sync_tokio]
+    pub async fn get_value(&self) -> i32 {
+        42
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test() {
+        let api = MyApi {};
+        assert_eq!(api.get_value_sync(), 42);
+    }
+}
+```
+
+
 ## How does it work?
 Take a look at the following piece of code:
 ```rs

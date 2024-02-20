@@ -2,6 +2,7 @@
 #![doc = include_str!("../README.md")]
 
 pub use also_sync_macros::also_sync_tokio;
+#[cfg(feature = "tokio")]
 use lazy_static::lazy_static;
 #[cfg(feature = "tokio")]
 use tokio::runtime::{Builder, Runtime};
