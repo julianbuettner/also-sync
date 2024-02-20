@@ -18,6 +18,12 @@ fn fn_arg_to_name(arg: &FnArg) -> Option<String> {
     }
 }
 
+#[cfg(not(feature = "tokio"))]
+#[proc_macro_attribute]
+pub fn also_sync_tokio(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    item
+}
+
 /// The main macro converting a `async fn x` into a sync `fn x_sync()`.
 /// It is currently highly experimental, so test it before using it.
 #[cfg(feature = "tokio")]
