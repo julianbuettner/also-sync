@@ -24,8 +24,8 @@ supporting sync.
 
 ```toml
 # Cargo.toml
-[package]
-# ...
+
+# The usual stuff...
 
 [features]
 # If also_sync is enabled, it enables tokio in also_sync
