@@ -1,21 +1,26 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
-pub use also_sync_macros::also_sync;
+pub use also_sync_macros::also_sync_tokio;
 use lazy_static::lazy_static;
+#[cfg(feature = "tokio")]
 use tokio::runtime::{Builder, Runtime};
 
+#[cfg(feature = "tokio")]
 lazy_static! {
     /// This is the global tokio runtime in which all `*_sync` functions
     /// are executed.
-    pub static ref TOKIO_RUNTIME: Runtime = Builder::new_multi_thread().enable_all().build().unwrap();
+    pub static ref TOKIO_RUNTIME: Runtime = Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap();
 }
 
 #[cfg(test)]
 mod test {
     use crate as also_sync;
 
-    #[also_sync]
+    #[also_sync_tokio]
     async fn add(a: i32, b: i32) -> i32 {
         a + b
     }
@@ -23,7 +28,7 @@ mod test {
     struct WithSelf;
 
     impl WithSelf {
-        #[also_sync]
+        #[also_sync_tokio]
         pub async fn with_self(self, a: i32) -> i32 {
             a
         }

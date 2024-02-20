@@ -20,8 +20,9 @@ fn fn_arg_to_name(arg: &FnArg) -> Option<String> {
 
 /// The main macro converting a `async fn x` into a sync `fn x_sync()`.
 /// It is currently highly experimental, so test it before using it.
+#[cfg(feature = "tokio")]
 #[proc_macro_attribute]
-pub fn also_sync(_attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn also_sync_tokio(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut ast: syn::ItemFn =
         syn::parse(item.clone()).expect("Annotated method appears to have a syntax error.");
     // println!("{:#?}", ast);
@@ -34,14 +35,12 @@ pub fn also_sync(_attr: TokenStream, item: TokenStream) -> TokenStream {
         .sig
         .inputs
         .iter()
-        .map(fn_arg_to_name)
-        .filter(Option::is_some)
-        .map(Option::unwrap)
+        .filter_map(fn_arg_to_name)
         .collect::<Vec<String>>()
         .join(", ");
 
     let function_name = match ast.sig.inputs.iter().next() {
-        Some(FnArg::Receiver(_)) => format!("self.{}", ast.sig.ident.to_string()),
+        Some(FnArg::Receiver(_)) => format!("self.{}", ast.sig.ident),
         _ => ast.sig.ident.to_string(),
     };
 

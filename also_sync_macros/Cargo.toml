@@ -6,6 +6,10 @@ edition = "2021"
 [lib]
 proc-macro = true
 
+[features]
+default = ["tokio"]
+tokio = []
+
 [dependencies]
 syn = { version = "2", features = ["full", "extra-traits"]}
 proc-macro2 = "1"

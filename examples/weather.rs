@@ -1,6 +1,6 @@
-use also_sync::also_sync;
+use also_sync::also_sync_tokio;
 
-#[also_sync]
+#[also_sync_tokio]
 async fn get_weather() -> Result<String, reqwest::Error> {
     let client = reqwest::Client::new();
     client
