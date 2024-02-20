@@ -8,6 +8,18 @@ on all cores.
 This allows a async-first library development while
 supporting sync.
 
+## Notes and considerations
+- Enabling `tokio` in `also_async` adds the entire
+  tokio runtime as a dependency and creates a runtime
+  instance at startup.
+- If the library is used in an async runtime, the sync
+  function is ran in a different runtime. This
+  might change in the future by making the async
+  functions private if a sync feature is enabled.
+- This library is currently more a proof of concept than a serious
+  solution to the problem.
+- Currently only the tokio runtime is available to execute async tasks.
+
 ## How to make your crate (lib) also sync
 
 ```toml
@@ -53,9 +65,15 @@ mod test {
 }
 ```
 
+## Run examples
+```bash
+cargo run --example weather
+cargo run --example dns_lookups
+```
+
 
 ## How does it work?
-Take a look at the following piece of code:
+Take the following code as an example:
 ```rs
 use also_sync::also_sync;
 
